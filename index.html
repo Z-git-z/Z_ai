@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hub - AI工具聚合平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #5f27cd;
+            cursor: pointer;
+        }
+
+        .navbar nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .navbar nav a:hover {
+            color: #5f27cd;
+        }
+
+        .search-box input {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .search-box button {
+            padding: 8px 15px;
+            background-color: #5f27cd;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-box button:hover {
+            background-color: #4a1da8;
+        }
+
+        /* 英雄区域 */
+        .hero {
+            text-align: center;
+            padding: 80px 5%;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        /* 工具卡片 */
+        .tools-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 0 5%;
+            margin: 40px 0;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tool-icon img {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* 按钮样式 */
+        .visit-button, .category-btn, .cta-button {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .visit-button {
+            background-color: #5f27cd;
+            color: white;
+        }
+
+        .visit-button:hover {
+            background-color: #4a1da8;
+        }
+
+        .category-btn {
+            background-color: #e0e0e0;
+            color: #555;
+            margin: 0 5px;
+        }
+
+        .category-btn.active {
+            background-color: #5f27cd;
+            color: white;
+        }
+
+        .cta-button {
+            background-color: #ff6b6b;
+            color: white;
+            font-size: 1.1em;
+            padding: 12px 30px;
+        }
+
+        .cta-button:hover {
+            background-color: #e05555;
+        }
+
+        /* 分类筛选区 */
+        .categories {
+            text-align: center;
+            margin: 30px 0;
+            padding: 0 5%;
+        }
+
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 30px 5%;
+            background-color: white;
+            margin-top: 50px;
+        }
+
+        .social-links a {
+            color: #555;
+            margin: 0 10px;
+            font-size: 1.2em;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #5f27cd;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .navbar nav {
+                margin: 15px 0;
+            }
+
+            .search-box {
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .search-box input {
+                width: 70%;
+            }
+
+            .tools-container {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        /* 新增的锚点样式 */
+        .section-anchor {
+            display: block;
+            position: relative;
+            top: -80px;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="logo" onclick="scrollToTop()">AI Hub</div>
+        <nav>
+            <a href="#home">首页</a>
+            <a href="#categories">分类</a>
+            <a href="#about">关于</a>
+        </nav>
+        <div class="search-box">
+            <input type="text" placeholder="搜索AI工具...">
+            <button onclick="handleSearch()">搜索</button>
+        </div>
+    </header>
+
+    <!-- 锚点 -->
+    <span id="home" class="section-anchor"></span>
+    
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <h1>发现最佳AI工具</h1>
+        <p>精选10个最实用的AI工具，提升您的工作效率</p>
+        <button class="cta-button" onclick="scrollToTools()">开始探索</button>
+    </section>
+
+    <!-- 锚点 -->
+    <span id="categories" class="section-anchor"></span>
+
+    <!-- 分类筛选区 -->
+    <div class="categories">
+        <button class="category-btn active" data-category="all">全部</button>
+        <button class="category-btn" data-category="writing">写作</button>
+        <button class="category-btn" data-category="image">图像</button>
+        <button class="category-btn" data-category="coding">编程</button>
+        <button class="category-btn" data-category="video">视频</button>
+        <button class="category-btn" data-category="audio">音频</button>
+    </div>
+
+    <!-- 工具展示区 - 10个AI工具卡片 -->
+    <div class="tools-container">
+        <!-- 工具卡片1 - ChatGPT -->
+        <div class="tool-card" data-categories="writing,coding">
+            <div class="tool-icon" style="background-color: #FF6B6B;">
+                <i class="fas fa-comment-dots" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>ChatGPT</h3>
+            <p>OpenAI的对话式AI，可用于写作、编程辅助等</p>
+            <a href="https://chat.openai.com" target="_blank" class="visit-button">访问</a>
+        </div>
+        
+        <!-- 工具卡片2 - Midjourney -->
+        <div class="tool-card" data-categories="image">
+            <div class="tool-icon" style="background-color: #4ECDC4;">
+                <i class="fas fa-paint-brush" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>Midjourney</h3>
+            <p>AI图像生成工具，通过文本描述创建艺术作品</p>
+            <a href="https://www.midjourney.com" target="_blank" class="visit-button">访问</a>
+        </div>
+        
+        <!-- 工具卡片3 - Grammarly -->
+        <div class="tool-card" data-categories="writing">
+            <div class="tool-icon" style="background-color: #45B7D1;">
+                <i class="fas fa-spell-check" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>Grammarly</h3>
+            <p>AI写作助手，检查语法、拼写和风格</p>
+            <a href="https://www.grammarly.com" target="_blank" class="visit-button">访问</a>
+        </div>
+        
+        <!-- 工具卡片4 - Notion AI -->
+        <div class="tool-card" data-categories="writing">
+            <div class="tool-icon" style="background-color: #FF9E7D;">
+                <i class="fas fa-sticky-note" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>Notion AI</h3>
+            <p>智能笔记和工作空间，提升生产力</p>
+            <a href="https://www.notion.so/product/ai" target="_blank" class="visit-button">访问</a>
+        </div>
+        
+        <!-- 工具卡片5 - DALL-E -->
+        <div class="tool-card" data-categories="image">
+            <div class="tool-icon" style="background-color: #A37BFC;">
+                <i class="fas fa-image" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>DALL-E</h3>
+            <p>OpenAI的图像生成工具，从文本创建图像</p>
+            <a href="https://openai.com/dall-e" target="_blank" class="visit-button">访问</a>
+        </div>
+        
+        <!-- 工具卡片6 - DeepL -->
+        <div class="tool-card" data-categories="writing">
+            <div class="tool-icon" style="background-color: #0F2C3D;">
+                <i class="fas fa-language" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>DeepL</h3>
+            <p>AI驱动的翻译工具，提供高质量的翻译</p>
+            <a href="https://www.deepl.com" target="_blank" class="visit-button">访问</a>
+        </div>
+        
+        <!-- 工具卡片7 - GitHub Copilot -->
+        <div class="tool-card" data-categories="coding">
+            <div class="tool-icon" style="background-color: #333333;">
+                <i class="fas fa-code" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>GitHub Copilot</h3>
+            <p>AI编程助手，实时建议代码和函数</p>
+            <a href="https://github.com/features/copilot" target="_blank" class="visit-button">访问</a>
+        </div>
+        
+        <!-- 工具卡片8 - Runway ML -->
+        <div class="tool-card" data-categories="video,image">
+            <div class="tool-icon" style="background-color: #FF3E80;">
+                <i class="fas fa-film" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>Runway ML</h3>
+            <p>创意AI工具集，用于视频和图像编辑</p>
+            <a href="https://runwayml.com" target="_blank" class="visit-button">访问</a>
+        </div>
+        
+        <!-- 工具卡片9 - Synthesia -->
+        <div class="tool-card" data-categories="video">
+            <div class="tool-icon" style="background-color: #00C4CC;">
+                <i class="fas fa-video" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>Synthesia</h3>
+            <p>AI视频生成平台，创建专业视频内容</p>
+            <a href="https://www.synthesia.io" target="_blank" class="visit-button">访问</a>
+        </div>
+        
+        <!-- 工具卡片10 - Otter.ai -->
+        <div class="tool-card" data-categories="audio">
+            <div class="tool-icon" style="background-color: #5F27CD;">
+                <i class="fas fa-microphone" style="color: white; font-size: 24px;"></i>
+            </div>
+            <h3>Otter.ai</h3>
+            <p>AI会议记录和转录工具，实时记录对话</p>
+            <a href="https://otter.ai" target="_blank" class="visit-button">访问</a>
+        </div>
+    </div>
+
+    <!-- 锚点 -->
+    <span id="about" class="section-anchor"></span>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2023 AI Hub | 精选AI工具聚合平台</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // 分类筛选功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            const toolCards = document.querySelectorAll('.tool-card');
+            
+            // 为每个分类按钮添加点击事件
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // 为当前点击的按钮添加active类
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // 筛选工具卡片
+                    toolCards.forEach(card => {
+                        if (category === 'all') {
+                            card.style.display = 'block';
+                        } else {
+                            const categories = card.getAttribute('data-categories').split(',');
+                            if (categories.includes(category)) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // 搜索功能
+            const searchInput = document.querySelector('.search-box input');
+            
+            // 监听搜索输入框的回车事件
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+        });
+
+        // 处理搜索功能
+        function handleSearch() {
+            const searchInput = document.querySelector('.search-box input');
+            const toolCards = document.querySelectorAll('.tool-card');
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm.trim() === '') {
+                // 如果搜索框为空，显示所有工具
+                toolCards.forEach(card => {
+                    card.style.display = 'block';
+                });
+                // 重置分类按钮状态
+                document.querySelector('.category-btn[data-category="all"]').click();
+                return;
+            }
+            
+            toolCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 滚动到工具区域
+        function scrollToTools() {
+            const toolsSection = document.querySelector('.tools-container');
+            toolsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 滚动到顶部
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 平滑滚动到锚点
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
